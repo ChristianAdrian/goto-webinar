@@ -9,5 +9,6 @@ class Webinar extends Model
 {
     use HasFactory;
     protected $table='webinar';
+    public $timestamps = true;
 
 }
