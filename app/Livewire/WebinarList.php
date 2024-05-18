@@ -34,9 +34,13 @@ class WebinarList extends Component
        
     }
     public function getList(){
-        $this->list = Webinar::get();
+        $this->list = Webinar::with('event')->get();
     }
-
+    public function remove($id){
+        Webinar::where('id',$id)->delete($id);
+        
+        $this->getList();
+    }
     public function save(){
        
         $this->validate();
@@ -50,5 +54,7 @@ class WebinarList extends Component
         $this->getList();
         $this->reset('name','description','event_id');
     }
+
+
 
 }

@@ -37,9 +37,18 @@
     @if ($list)
         @foreach ($list as $item) 
         <div class="card p-3">
-            <h5>Event Name: <b>{{$item->name}}</b></h5>
-            <p>{{$item->description}}</p>
-            <button>GoTo Webinar</button>
+            <h5>Webinar Name: <b>{{$item->name}}</b></h5>
+            <p>Event: <b>{{$item->event->name}}</b></p>
+            <i>{{$item->description}}</i>
+            <div class="row">
+                <div class="col">
+                    <button class="btn btn-sm btn-danger w-100" wire:click='remove({{$item->id}})'> Remove</button>
+                </div>
+                <div class="col">
+                    <button class="btn btn-sm btn-dark w-100"> Add GoTo Webinar</button>
+                </div>
+            </div>
+
         </div>
         @endforeach
     @endif
