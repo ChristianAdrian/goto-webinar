@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Livewire\WebinarList;
 use App\Http\Controllers\GoToWebinarController;
+use App\Http\Middleware\EnsureTokenIsValid;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +16,11 @@ use App\Http\Controllers\GoToWebinarController;
 |
 */
 
-Route::get('/list',WebinarList::class);
-Route::get('/',[GoToWebinarController::class, 'home']);
-
+Route::get('/list',WebinarList::class)->middleware(EnsureTokenIsValid::class);
+Route::get('/',[GoToWebinarController::class, 'home'])->middleware(EnsureTokenIsValid::class);
 Route::get('/getToken',[GoToWebinarController::class, 'generateToken']);
 Route::get('/generateCode',[GoToWebinarController::class, 'generateCode']);
 Route::get('/saveToken',[GoToWebinarController::class, 'saveToken']);
+
+Route::get('/createWebinar',[GoToWebinarController::class, 'createWebinar']);
+Route::get('/getWebinarList',[GoToWebinarController::class, 'getWebinarList']);

@@ -15,6 +15,10 @@ return new class extends Migration
             $table->id();
             $table->text('name');
             $table->text('description');
+            $table->text('gotowebinar_id')->nullable();
+            $table->text('gotowebinar_panelist_count')->nullable();
+            $table->text('gotowebinar_user_count')->nullable();
+            $table->timestamp('gotowebinar_last_updated_date')->nullable();
             $table->foreignId('event_id');
             $table->timestamps();
         });

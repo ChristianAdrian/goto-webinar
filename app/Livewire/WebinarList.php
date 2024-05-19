@@ -7,6 +7,7 @@ use App\Models\Webinar;
 use App\Models\Event;
 use Form;
 use Cache;
+use App\Http\Controllers\GoToWebinarController;
 class WebinarList extends Component
 {
 
@@ -28,7 +29,7 @@ class WebinarList extends Component
     {
         return view('livewire.webinar-list');
     }
-    public function mount(){
+    public function mount(){      
         $this->getList();
         $this->event_list =  Event::get();
        
@@ -38,7 +39,7 @@ class WebinarList extends Component
     }
     public function remove($id){
         Webinar::where('id',$id)->delete($id);
-        
+
         $this->getList();
     }
     public function save(){
@@ -53,6 +54,32 @@ class WebinarList extends Component
         );
         $this->getList();
         $this->reset('name','description','event_id');
+    }
+    public function linkGotoWebinar(Webinar $data){
+
+        $gotowebinar =    New GotoWebinarController;
+        
+        $webinar_key = $gotowebinar->createWebinar($data->name,$data->description);
+       
+        $data->gotowebinar_id = $webinar_key;
+        $data->save();
+        $this->getList();
+    }
+    public function addUser(Webinar $data){
+
+        $gotowebinar =New GotoWebinarController;
+        
+        $webinar_key = $gotowebinar->createUser($data->gotowebinar_id,'first_name','last_name','cadriandomantay@gmail.com');
+        $data->gotowebinar_user_count++;
+        $data->save();
+        $this->getList();
+    }
+    public function addPanelList(Webinar $data){
+
+        $gotowebinar =New GotoWebinarController;
+        
+        $webinar_key = $gotowebinar->createPanelList($data->gotowebinar_id,'cadriandomantay@gmail.com','name');
+        $this->getList();
     }
 
 
