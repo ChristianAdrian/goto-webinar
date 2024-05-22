@@ -8,8 +8,12 @@ use App\Models\Event;
 use Form;
 use Cache;
 use App\Http\Controllers\GoToWebinarController;
+use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Faker\Generator as Faker;
+
 class WebinarList extends Component
 {
+    use LivewireAlert;
 
     public $list;
     public $form;
@@ -35,7 +39,7 @@ class WebinarList extends Component
        
     }
     public function getList(){
-        $this->list = Webinar::with('event')->get();
+        $this->list = Webinar::with('event')->latest()->get();
     }
     public function remove($id){
         Webinar::where('id',$id)->delete($id);
@@ -52,33 +56,52 @@ class WebinarList extends Component
                 'created_at'  => date('Y-m-d H:i:s'),
             ]
         );
+        $this->alert('info', 'New Webinar Added');
+
         $this->getList();
         $this->reset('name','description','event_id');
     }
     public function linkGotoWebinar(Webinar $data){
-
         $gotowebinar =    New GotoWebinarController;
-        
         $webinar_key = $gotowebinar->createWebinar($data->name,$data->description);
-       
         $data->gotowebinar_id = $webinar_key;
+        $this->alert('info', 'Webinar Added to Goto Webinar');
+
         $data->save();
         $this->getList();
     }
     public function addUser(Webinar $data){
-
         $gotowebinar =New GotoWebinarController;
-        
-        $webinar_key = $gotowebinar->createUser($data->gotowebinar_id,'first_name','last_name','cadriandomantay@gmail.com');
-        $data->gotowebinar_user_count++;
-        $data->save();
+        $response = $gotowebinar->createUser($data->gotowebinar_id,fake()->unique()->name,fake()->unique()->name,fake()->unique()->safeEmail() );
+        if(property_exists($response,'validationErrorCodes')) {
+            foreach($response->validationErrorCodes as $error){
+                $this->alert('warning',  $error->description);
+            }
+        }else{
+            $this->alert('info',   $response->status . (property_exists($response,'description')? ( ' - '.$response->description):''));
+            if(!property_exists($response,'description')){
+                $data->gotowebinar_user_count++;
+                $data->save();
+            }
+        }
         $this->getList();
     }
     public function addPanelList(Webinar $data){
 
         $gotowebinar =New GotoWebinarController;
         
-        $webinar_key = $gotowebinar->createPanelList($data->gotowebinar_id,'cadriandomantay@gmail.com','name');
+        $response = $gotowebinar->createPanelList($data->gotowebinar_id,fake()->unique()->safeEmail() ,fake()->unique()->name);
+        if(!is_array($response) && property_exists($response,'errorCode')) {
+                $this->alert('warning',  $response->description);
+        }else{
+            
+            foreach($response as $info){
+                $this->alert('info',  $info->name .' added to panelist');          
+            }
+            $data->gotowebinar_panelist_count++;
+            $data->save();
+        }
+        
         $this->getList();
     }
 

@@ -47,7 +47,7 @@
                     <button class="btn btn-sm btn-info w-100" wire:click='addUser({{$item}})' wire:loading.attr="disabled" wire:loading.class="opacity-50">Add Participant({{$item->gotowebinar_user_count}})</button>
                 </div>
                 <div class="col">
-                    <button class="btn btn-sm btn-info w-100" wire:click='addPanelList({{$item}})' wire:loading.attr="disabled" wire:loading.class="opacity-50">Add Panelist</button>
+                    <button class="btn btn-sm btn-info w-100" wire:click='addPanelList({{$item}})' wire:loading.attr="disabled" wire:loading.class="opacity-50">Add Panelist({{$item->gotowebinar_panelist_count}})</button>
                 </div>
                 @endif
                 <div class="col">
@@ -57,4 +57,6 @@
         </div>
         @endforeach
     @endif
+
+
 </div>
